@@ -1,0 +1,19 @@
+[Unit]
+Description=ESP32 Image Processing Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/root/esp32_server
+Environment=PATH=/root/esp32_server/venv/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+ExecStartPre=/bin/mkdir -p /root/esp32_server/logs
+ExecStartPre=/bin/mkdir -p /root/esp32_server/images
+ExecStartPre=/bin/mkdir -p /root/esp32_server/config
+ExecStartPre=/bin/chown -R root:root /root/esp32_server
+ExecStart=/root/esp32_server/venv/bin/python /root/esp32_server/image_server.py
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,18 @@
+{
+    "server": {
+        "port": 8080,
+        "image_url": "http://stadtettlingen.my-gateway.de/marktplatz.jpg",
+        "refresh_interval": 60
+    },
+    "image": {
+        "target_width": 240,
+        "target_height": 135
+    },
+    "paths": {
+        "base_dir": "/root/esp32_server",
+        "log_file": "/root/esp32_server/logs/image_server.log",
+        "image_path": "/root/esp32_server/images/scaled_image.jpg",
+        "source_image_path": "/root/esp32_server/images/source_image.jpg",
+        "config_file": "/root/esp32_server/config/config.json"
+    }
+} 

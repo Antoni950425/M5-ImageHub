@@ -1,0 +1,135 @@
+name: M5StickC-Plus Image Display Project
+description: A project for M5StickC-Plus using MicroPython to display web images with proper error handling and UI feedback
+
+filesystem:
+  root_directory: /flash
+  required_structure:
+    - apps/
+    - blocks/
+    - boot.py
+    - img/
+    - main.py
+    - res/
+    - temp.py
+    - test.py
+
+memory_constraints:
+  total_memory: 96080
+  free_memory: 78864
+  allocated_memory: 17216
+  flash_total: 1433600
+  flash_free: 970752
+
+cleanup_rules:
+  preserve_directories:
+    - apps
+    - blocks
+    - img
+    - res
+  preserve_files:
+    - boot.py
+    - main.py
+    - temp.py
+    - test.py
+  cleanup_policy:
+    - Remove all non-listed directories
+    - Remove all non-listed files
+    - Preserve directory structure
+    - Clean temporary downloads after processing
+
+specifications:
+  device: M5StickC-Plus
+  language: MicroPython
+  display: 135x240 LCD (ST7789v2 driver)
+  memory: Limited RAM (~47KB available)
+  image:
+    source_resolution: 800x448 pixels
+    format: JPEG
+    url: stadtettlingen.my-gateway.de/marktplatz.jpg
+
+project_requirements:
+  - Handle WiFi connection with error handling
+  - Fetch and display web images efficiently
+  - Implement auto-refresh and manual refresh
+  - Handle memory constraints
+  - Provide clear user feedback
+  - Display download progress with loading bar
+
+dependencies:
+  - M5StickC-Plus MicroPython firmware
+  - urequests
+  - Built-in LCD driver
+  - Python server with PIL for image processing
+
+lessons_learned:
+  display:
+    - Screen resolution is 135x240 pixels
+    - Status messages should be temporary
+    - Refresh entire screen instead of partial updates
+    - Landscape mode (rotation 1) works best
+    - Moderate brightness (25) is sufficient
+    - Loading bar should be thin (4px) and centered
+    - Status messages work best with black background
+
+  memory_management:
+    - Use streaming for large file downloads
+    - Implement chunk-based downloads (1KB chunks)
+    - Regular garbage collection is essential
+    - Add small delays between operations
+    - Monitor memory allocation failures
+    - Avoid loading entire image into memory at once
+    - Maximum safe chunk size is 512 bytes
+
+  image_handling:
+    - Image scaling handled by server-side Python script
+    - Target resolution is 240x135 pixels
+    - Images stored in /flash/img.jpg
+    - Server pre-processes images to exact display dimensions
+    - No client-side scaling required
+
+  error_handling:
+    - Show clear status messages
+    - Implement proper error recovery
+    - Add debug logging for troubleshooting
+    - Handle network timeouts
+    - Graceful failure modes
+    - Handle memory allocation failures
+    - Provide fallback display options
+    - Show download progress with loading bar
+
+  best_practices:
+    - Use wait_ms() instead of time.sleep()
+    - Regular garbage collection
+    - Button A for manual refresh
+    - One-minute auto-refresh interval
+    - Center-aligned status messages
+    - Use temporary status messages
+    - Avoid partial screen updates
+    - Stream large files in chunks
+    - Use landscape orientation
+    - Show download progress with thin loading bar
+    - Keep UI elements centered and minimal
+
+debugging_insights:
+  - Memory allocation failures require chunked downloads
+  - Text visibility improved with background rectangle
+  - Status messages should be cleared by redrawing full screen
+  - Avoid f-strings in MicroPython (use .format() instead)
+  - Maximum chunk size of 512B prevents memory errors
+  - urequests Response object lacks headers attribute
+  - Progress bar works best with modulo-based animation
+
+display_not_to_dos:
+  - Don't try to load image off-screen using lcd.image(SCREEN_WIDTH, 0, ...) as it's not supported
+  - Don't attempt to read pixels using lcd.pixel() from off-screen positions
+  - Don't create large temporary buffers for the entire scaled image
+  - Don't rely on Response headers for content length
+  - Don't make UI elements too large or intrusive
+  - Don't mix direct pixel manipulation with lcd.image() display
+  - Don't attempt to use screen area outside visible bounds (240x135)
+  - Don't allocate buffers larger than 1KB for image processing
+  - Don't skip garbage collection between chunk processing
+  - Don't attempt partial screen updates during scaling operations
+
+  # New architecture: Image processing and scaling will be handled by a server-side Python script.
+  # The ESP32 will fetch the pre-processed image from the server.
